@@ -3,7 +3,7 @@
 	import Input from '../components/Input.svelte';
 	import Select from '../components/Select.svelte';
 	import simplex from '../constants/shaders/simplex';
-	import voronoi from '../constants/shaders/voronoi';
+	import worley from '../constants/shaders/worley';
 	import { UniformType } from '../constants/shaders/_interfaces';
 
 	const vertex = `
@@ -34,11 +34,11 @@ void main() {
 	});
 
 	let algorithms = {
-		voronoi,
+		worley,
 		simplex
 	};
 
-	let algorithm: keyof typeof algorithms = 'voronoi';
+	let algorithm: keyof typeof algorithms = 'worley';
 
 	type Options<T extends keyof typeof algorithms = keyof typeof algorithms> = Record<
 		T,
@@ -179,7 +179,7 @@ void main() {
 					<Select
 						name="Algorithm"
 						options={{
-							voronoi: 'Voronoi',
+							worley: 'Worley',
 							simplex: 'Simplex'
 						}}
 						bind:value={algorithm}

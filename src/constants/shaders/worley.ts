@@ -40,7 +40,7 @@ vec2 hash( vec2 p ){
 	return fract(sin(p)*43758.5453);
 }
 
-float voronoi( vec2 x, float time, float mode){
+float worley( vec2 x, float time, float mode){
     float function 			= mod(mode,4.0);
     bool  multiply_by_F1	= mod(mode,8.0)  >= 4.0;
     bool  inverse				= mod(mode,16.0) >= 8.0;
@@ -92,7 +92,7 @@ float fbm(vec2 p, float time, float mode){
 	float a = 0.5;
 	
 	for( int i=0; i<OCTAVES; i++ ){
-		s += a * voronoi(p, time, mode);
+		s += a * worley(p, time, mode);
 		m += a;
 		a *= 0.5;
 		p *= 2.0;
@@ -102,7 +102,7 @@ float fbm(vec2 p, float time, float mode){
 
 void main() {
   vec2 st = (gl_FragCoord.xy + u_position) / u_resolution;
-  float n = voronoi(st * u_scale, u_time, u_mode);
+  float n = worley(st * u_scale, u_time, u_mode);
   gl_FragColor = vec4(vec3(n), 1.0);
 }
 `.trimStart();
