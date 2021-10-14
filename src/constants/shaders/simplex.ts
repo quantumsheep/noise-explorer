@@ -10,11 +10,13 @@ export const typing = {
   scale: <UniformDefinition>{
     name: 'Scale',
     type: UniformType.Float,
-    default: 20.0,
+    default: 10.0,
   },
 };
 
 export const shader = `
+#version 300 es
+
 #ifdef GL_ES
 precision mediump float;
 #endif
@@ -24,6 +26,8 @@ uniform vec2 u_resolution;
 
 uniform vec2 u_position;
 uniform float u_scale;
+
+out vec4 fragColor;
 
 vec3 mod289(vec3 x) {
   return x - floor(x * (1.0 / 289.0)) * 289.0;
@@ -89,7 +93,7 @@ float snoise(vec2 v)
 void main() {
     vec2 st = (gl_FragCoord.xy + u_position) / u_resolution;
     float n = snoise(st * u_scale);
-    gl_FragColor = vec4(vec3(n), 1.0);
+    fragColor = vec4(vec3(n), 1.0);
 }
 `.trimStart();
 

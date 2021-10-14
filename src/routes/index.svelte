@@ -2,32 +2,36 @@
 	import { onMount } from 'svelte';
 	import Input from '../components/Input.svelte';
 	import Select from '../components/Select.svelte';
+	import island from '../constants/shaders/island';
+	import perlin from '../constants/shaders/perlin';
 	import simplex from '../constants/shaders/simplex';
 	import worley from '../constants/shaders/worley';
 	import { UniformType } from '../constants/shaders/_interfaces';
 
 	const vertex = `
+#version 300 es
+
 #ifdef GL_ES
 precision mediump float;
 #endif
 
-attribute vec2 a_position;
-attribute vec2 a_texcoord;
+in vec2 a_position;
+in vec2 a_texcoord;
 
-varying vec2 v_texcoord;
+out vec2 v_texcoord;
 
 void main() {
     gl_Position = vec4(a_position, 0.0, 1.0);
     v_texcoord = a_texcoord;
 }
-`;
+`.trim();
 
 	let canvas: HTMLCanvasElement;
 	let gl: WebGLRenderingContext;
 
 	onMount(() => {
 		gl =
-			canvas.getContext('webgl') ||
+			canvas.getContext('webgl2') ||
 			(canvas.getContext('experimental-webgl') as WebGLRenderingContext);
 
 		loadShaderProgram();
@@ -35,10 +39,12 @@ void main() {
 
 	let algorithms = {
 		worley,
-		simplex
+		simplex,
+		perlin,
+		island
 	};
 
-	let algorithm: keyof typeof algorithms = 'worley';
+	let algorithm: keyof typeof algorithms = 'perlin';
 
 	type Options<T extends keyof typeof algorithms = keyof typeof algorithms> = Record<
 		T,
@@ -66,7 +72,7 @@ void main() {
 		if (!canvas || !program || program !== targetProgram) return;
 
 		const resolutionLocation = gl.getUniformLocation(program, 'u_resolution');
-		gl.uniform2fv(resolutionLocation, [canvas.width / 2, canvas.height / 2]);
+		gl.uniform2fv(resolutionLocation, [canvas.width, canvas.height]);
 
 		const timeLocation = gl.getUniformLocation(program, 'u_time');
 		gl.uniform1f(timeLocation, performance.now() / 1000);
@@ -180,7 +186,9 @@ void main() {
 						name="Algorithm"
 						options={{
 							worley: 'Worley',
-							simplex: 'Simplex'
+							simplex: 'Simplex',
+							perlin: 'Perlin',
+							island: 'Island'
 						}}
 						bind:value={algorithm}
 						on:change={loadShaderProgram}
@@ -194,6 +202,7 @@ void main() {
 								type={uniform.min !== undefined && uniform.max !== undefined ? 'range' : 'number'}
 								min={uniform.min}
 								max={uniform.max}
+								step={uniform.step}
 								bind:value={options[algorithm][key]}
 							/>
 						{/if}

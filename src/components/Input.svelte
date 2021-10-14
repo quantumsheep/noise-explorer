@@ -7,6 +7,7 @@
 
 	export let min: number = null;
 	export let max: number = null;
+	export let step: number = null;
 
 	export let value: string = '';
 
@@ -26,14 +27,15 @@
 		{value}
 		{min}
 		{max}
+		{step}
 		on:input={(e) => {
 			value = e.target['value'];
 			dispatch('change', value);
 		}}
-        on:change={(e) => {
-            value = e.target['value'];
-            dispatch('change', value);
-        }}
+		on:change={(e) => {
+			value = e.target['value'];
+			dispatch('change', value);
+		}}
 	/>
 	{#if error}
 		<p class="text-red-500 text-xs italic">{error}</p>

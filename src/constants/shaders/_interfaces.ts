@@ -10,6 +10,7 @@ export type UniformDefinition = {
 } & ({
   type: UniformType.Float,
   default: number,
+  step?: number,
   min?: number,
   max?: number,
 } | {
