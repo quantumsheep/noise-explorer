@@ -16,6 +16,7 @@ export type UniformDefinition = {
 } | {
   type: UniformType.Int,
   default: number,
+  step?: number,
   min?: number,
   max?: number,
 } | {
