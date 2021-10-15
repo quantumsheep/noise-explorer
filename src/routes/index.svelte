@@ -7,6 +7,7 @@
 	import simplex from '../constants/shaders/simplex';
 	import worley from '../constants/shaders/worley';
 	import { UniformType } from '../constants/shaders/_interfaces';
+	import { createQueryStore } from '../utils/store';
 
 	const vertex = `
 #version 300 es
@@ -44,7 +45,12 @@ void main() {
 		island
 	};
 
-	let algorithm: keyof typeof algorithms = 'perlin';
+	const queryAlgorithmStore = createQueryStore<keyof typeof algorithms>('algorithm');
+	let algorithm = queryAlgorithmStore.get();
+
+	if (!(algorithm in algorithms)) {
+		algorithm = 'perlin';
+	}
 
 	type Options<T extends keyof typeof algorithms = keyof typeof algorithms> = Record<
 		T,
@@ -191,7 +197,10 @@ void main() {
 							island: 'Island'
 						}}
 						bind:value={algorithm}
-						on:change={loadShaderProgram}
+						on:change={() => {
+							queryAlgorithmStore.set(algorithm);
+							loadShaderProgram();
+						}}
 					/>
 					<hr class="border-gray-800" />
 					<br />
