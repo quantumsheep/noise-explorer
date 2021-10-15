@@ -1,0 +1,44 @@
+name: Docker build
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build_image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to registry
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_REGISTRY_USER }}
+          password: ${{ secrets.DOCKER_REGISTRY_PASS }}
+
+      - name: Tag name
+        id: tag_name
+        run: |
+          TAG_NAME=${GITHUB_REF/refs\/tags\//}
+          echo ::set-output name=TAG_NAME::$TAG_NAME
+          echo ::set-output name=TAG_NAME_MAJOR::$(echo $TAG_NAME | cut -d. -f1)
+          echo ::set-output name=TAG_NAME_MINOR::$(echo $TAG_NAME | cut -d. -f2)
+          echo ::set-output name=TAG_NAME_PATCH::$(echo $TAG_NAME | cut -d. -f3)
+
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: |
+            quantumsheep/noise-explorer:${{ steps.tag_name.outputs.TAG_NAME }}
+            quantumsheep/noise-explorer:${{ steps.tag_name.outputs.TAG_NAME_MAJOR }}.${{ steps.tag_name.outputs.TAG_NAME_MINOR }}
+            quantumsheep/noise-explorer:${{ steps.tag_name.outputs.TAG_NAME_MAJOR }}
+            quantumsheep/noise-explorer:latest
+
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
