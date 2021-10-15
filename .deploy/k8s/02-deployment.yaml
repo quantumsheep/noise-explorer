@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: noise-explorer
+  namespace: noise-explorer
+  labels:
+    app: noise-explorer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: noise-explorer
+  template:
+    metadata:
+      labels:
+        app: noise-explorer
+    spec:
+      containers:
+        - image: quantumsheep/noise-explorer:latest
+          imagePullPolicy: Always
+          name: noise-explorer
+          ports:
+            - containerPort: 3000
+          resources:
+            limits:
+              cpu: "0.5"
+              memory: 512Mi
+            requests:
+              cpu: "0.2"
+              memory: 256Mi
+      restartPolicy: Always

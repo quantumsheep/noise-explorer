@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: noise-explorer
+  namespace: noise-explorer
+  labels:
+    app: noise-explorer
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+    - host: noise-explorer.qtmsheep.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: noise-explorer
+                port:
+                  number: 3000
