@@ -1,0 +1,15 @@
+version: "3.0"
+
+services:
+  front:
+    build:
+      context: .
+      dockerfile: Dockerfile-dev
+    volumes:
+      - ./src:/app/src
+      - ./static:/app/static
+      - ./.svelte-kit:/app/.svelte-kit
+      - ./build:/app/build
+    ports:
+      - 3000:3000
+    tty: true
