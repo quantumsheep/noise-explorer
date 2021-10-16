@@ -20,6 +20,21 @@ export const typing = {
     min: 1,
     max: 7,
   },
+  radius: <UniformDefinition>{
+    name: 'Radius',
+    type: UniformType.Float,
+    default: 44.8,
+    step: 0.001,
+    min: 0,
+    max: 100,
+    divider: 100,
+  },
+  radius_smooth: <UniformDefinition>{
+    name: 'Radius Smooth',
+    type: UniformType.Float,
+    default: 0.202,
+    step: 0.001,
+  },
 };
 
 export const shader = `
@@ -36,6 +51,8 @@ uniform float u_time;
 uniform vec2 u_position;
 uniform float u_scale;
 uniform int u_octaves;
+uniform float u_radius;
+uniform float u_radius_smooth;
 
 out vec4 fragColor;
 
@@ -86,8 +103,9 @@ float simplex(vec2 v) {
 void main() {
     vec2 p = gl_FragCoord.xy / u_resolution.xy;
 
-    vec2 uv = p * u_scale * vec2(u_resolution.x / u_resolution.y, 1.0);
+    vec2 uv = (p + (u_position / u_resolution.xy)) * u_scale * vec2(u_resolution.x / u_resolution.y, 1.0);
     uv = uv * 10.;
+
 
     mat2 m = mat2(1.6, 1.2, -1.2, 1.6);
 
@@ -99,7 +117,30 @@ void main() {
 
     f = 0.5 + 0.5 * f;
 
-    fragColor = vec4(f, f, f, 1.0);
+    float radius = u_radius;
+    float dist = distance(p, vec2(0.5));
+    float circle = smoothstep(-u_radius_smooth, u_radius_smooth, radius - dist);
+    f *= circle;
+
+    if(f > 0.7) {
+        fragColor = vec4(1.0, 1.0, 1.0, 1.0);
+    } else if(f > 0.67) {
+        fragColor = vec4(0.71, 0.81, 0.72, 1);
+    } else if(f > 0.6) {
+        fragColor = vec4(0.515, 0.715, 0.531, 1.000);
+    } else if(f > 0.5) {
+        fragColor = vec4(0.283, 0.860, 0.252, 1.000);
+    } else if(f > 0.46) {
+        fragColor = vec4(0.94, 1, 0.71, 1);
+    } else if(f > 0.4) {
+        fragColor = vec4(0.236, 0.325, 1.000, 1.000);
+    } else if(f > 0.35) {
+        fragColor = vec4(0, 0.12, 1, 1);
+    } else {
+        fragColor = vec4(0, 0, 0.81, 1);
+    }
+
+    // fragColor = vec4(f, f, f, 1.0);
 }
 `.trimStart();
 

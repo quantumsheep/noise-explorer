@@ -2,7 +2,8 @@
 	import { onMount } from 'svelte';
 	import Input from '../components/Input.svelte';
 	import Select from '../components/Select.svelte';
-	import island from '../constants/shaders/island';
+	import islandPerlin from '../constants/shaders/island-perlin';
+	import islandSimplex from '../constants/shaders/island-simplex';
 	import perlin from '../constants/shaders/perlin';
 	import simplex from '../constants/shaders/simplex';
 	import worley from '../constants/shaders/worley';
@@ -42,8 +43,22 @@ void main() {
 		worley,
 		simplex,
 		perlin,
-		island
+		'island-perlin': islandPerlin,
+		'island-simplex': islandSimplex
 	};
+
+	const algorithmDemoOptions = [
+		{ name: 'Example: Island (Perlin)', value: 'island-perlin' },
+		{ name: 'Example: Island (Simplex)', value: 'island-simplex' }
+	].sort((a, b) => a.name.localeCompare(b.name));
+
+	const algorithmOptions = [
+		{ name: 'Worley', value: 'worley' },
+		{ name: 'Simplex', value: 'simplex' },
+		{ name: 'Perlin', value: 'perlin' }
+	]
+		.sort((a, b) => a.name.localeCompare(b.name))
+		.concat(algorithmDemoOptions);
 
 	const queryAlgorithmStore = createQueryStore<keyof typeof algorithms>('algorithm');
 	let algorithm = queryAlgorithmStore.get();
@@ -195,12 +210,7 @@ void main() {
 				<div class="w-full px-3">
 					<Select
 						name="Algorithm"
-						options={[
-							{ name: 'Worley', value: 'worley' },
-							{ name: 'Simplex', value: 'simplex' },
-							{ name: 'Perlin', value: 'perlin' },
-							{ name: 'Example: Island (Perlin)', value: 'island' }
-						].sort((a, b) => a.name.localeCompare(b.name))}
+						options={algorithmOptions}
 						bind:value={algorithm}
 						on:change={() => {
 							queryAlgorithmStore.set(algorithm);
