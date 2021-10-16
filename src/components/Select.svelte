@@ -3,7 +3,7 @@
 	import { clickOutside } from '../utils/click-outside';
 
 	export let name: string;
-	export let options: Record<string, string>;
+	export let options: { name: string; value: string }[];
 
 	export let value: string;
 
@@ -40,7 +40,9 @@
 			on:click={invert}
 		>
 			<span class="flex items-center">
-				<span class="block truncate text-gray-700 leading-tight">{options[value]}</span>
+				<span class="block truncate text-gray-700 leading-tight"
+					>{options.find((o) => o.value === value)?.name}</span
+				>
 			</span>
 			<span class="ml-3 absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
 				<svg
@@ -67,31 +69,31 @@
 			aria-labelledby="listbox-label"
 			aria-activedescendant="listbox-option-3"
 		>
-			{#each Object.entries(options) as [optionValue, optionName]}
+			{#each options as option}
 				<li
 					class="text-gray-900 cursor-default select-none relative py-2 pl-3 pr-9"
-					class:text-white={mouseInsideOptionValue === optionValue}
-					class:bg-indigo-600={mouseInsideOptionValue === optionValue}
+					class:text-white={mouseInsideOptionValue === option.value}
+					class:bg-indigo-600={mouseInsideOptionValue === option.value}
 					role="option"
 					on:click={() => {
-						value = optionValue;
-						dispatch('change', optionValue);
+						value = option.value;
+						dispatch('change', option.value);
 					}}
-					on:mouseenter={() => onMouseEnter(optionValue)}
-					on:mouseleave={() => onMouseLeave(optionValue)}
+					on:mouseenter={() => onMouseEnter(option.value)}
+					on:mouseleave={() => onMouseLeave(option.value)}
 				>
 					<div class="flex items-center">
 						<span
 							class="ml-3 block truncate"
-							class:font-normal={value !== optionValue}
-							class:font-semibold={value === optionValue}>{optionName}</span
+							class:font-normal={value !== option.value}
+							class:font-semibold={value === option.value}>{option.name}</span
 						>
 					</div>
 
 					<span
 						class="text-indigo-600 absolute inset-y-0 right-0 flex items-center pr-4"
-						class:text-white={mouseInsideOptionValue === optionValue}
-						class:hidden={value !== optionValue}
+						class:text-white={mouseInsideOptionValue === option.value}
+						class:hidden={value !== option.value}
 					>
 						<svg
 							class="h-5 w-5"

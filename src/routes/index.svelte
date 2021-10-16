@@ -195,12 +195,12 @@ void main() {
 				<div class="w-full px-3">
 					<Select
 						name="Algorithm"
-						options={{
-							worley: 'Worley',
-							simplex: 'Simplex',
-							perlin: 'Perlin',
-							island: 'Island'
-						}}
+						options={[
+							{ name: 'Worley', value: 'worley' },
+							{ name: 'Simplex', value: 'simplex' },
+							{ name: 'Perlin', value: 'perlin' },
+							{ name: 'Example: Island (Perlin)', value: 'island' }
+						].sort((a, b) => a.name.localeCompare(b.name))}
 						bind:value={algorithm}
 						on:change={() => {
 							queryAlgorithmStore.set(algorithm);
