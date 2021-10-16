@@ -33,7 +33,7 @@ uniform vec2 u_resolution;
 
 uniform float u_position;
 uniform float u_scale;
-uniform float u_mode;
+uniform int u_mode;
 
 out vec4 fragColor;
 
@@ -106,7 +106,7 @@ float fbm(vec2 p, float time, float mode){
 
 void main() {
   vec2 st = (gl_FragCoord.xy + u_position) / u_resolution;
-  float n = worley(st * u_scale, u_time, u_mode);
+  float n = worley(st * u_scale, u_time, float(u_mode));
   fragColor = vec4(vec3(n), 1.0);
 }
 `.trimStart();
