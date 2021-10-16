@@ -85,11 +85,16 @@ void main() {
 
 		for (const key in options[algorithm]) {
 			const uniformLocation = gl.getUniformLocation(program, `u_${key}`);
-			const uniformType = algorithms[algorithm].typing[key].type;
+			const uniformTyping = algorithms[algorithm].typing[key];
+			const uniformType = uniformTyping.type;
 			const uniformValue = options[algorithm][key];
 
-			if (uniformType === UniformType.Float || uniformType === UniformType.Int) {
-				gl.uniform1f(uniformLocation, uniformValue);
+			if (uniformType === UniformType.Float) {
+				const divider = uniformTyping.divider || 1;
+				gl.uniform1f(uniformLocation, uniformValue / divider);
+			} else if (uniformType === UniformType.Int) {
+				const divider = uniformTyping.divider || 1;
+				gl.uniform1i(uniformLocation, uniformValue / divider);
 			} else if (uniformType === UniformType.Vector2) {
 				gl.uniform2fv(uniformLocation, uniformValue);
 			} else if (uniformType === UniformType.Vector3) {
