@@ -13,12 +13,14 @@ export type UniformDefinition = {
   step?: number,
   min?: number,
   max?: number,
+  divider?: number,
 } | {
   type: UniformType.Int,
   default: number,
   step?: number,
   min?: number,
   max?: number,
+  divider?: number,
 } | {
   type: UniformType.Vector2,
   default: [number, number],
