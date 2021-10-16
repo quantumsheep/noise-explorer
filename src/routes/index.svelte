@@ -182,13 +182,13 @@ void main() {
 	}
 </script>
 
-<div class="w-screen h-screen bg-gray-800 flex flex-row items-center justify-center p-3">
-	<div class="mx-auto w-2/3 shadow-2xl">
+<div class="page w-screen bg-gray-800 flex flex-row items-center justify-center p-3">
+	<div class="mx-auto shadow-2xl">
 		<div class="rounded-2xl shadow-lg bg-gray-900 w-full p-3 antialiased">
-			<div class="flex flex-row">
+			<div class="flex flex-col lg:flex-row">
 				<canvas
 					bind:this={canvas}
-					class="rounded-xl shadow-lg antialiased"
+					class="rounded-xl shadow-lg antialiased mb-4 lg:mb-0"
 					width="1024"
 					height="1024"
 				/>
@@ -245,8 +245,12 @@ void main() {
 </div>
 
 <style>
+	.page {
+		min-height: 100vh;
+	}
+
 	canvas {
 		width: 512px;
-		height: 512px;
+		max-width: 100%;
 	}
 </style>
