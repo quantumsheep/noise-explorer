@@ -20,6 +20,15 @@ export const typing = {
     min: 1,
     max: 7,
   },
+  amplitude: <UniformDefinition>{
+    name: 'Amplitude',
+    type: UniformType.Float,
+    default: 50,
+    min: -100,
+    max: 100,
+    step: 1,
+    divider: 100,
+  },
   radius: <UniformDefinition>{
     name: 'Radius',
     type: UniformType.Float,
@@ -51,6 +60,7 @@ uniform float u_time;
 uniform vec2 u_position;
 uniform float u_scale;
 uniform int u_octaves;
+uniform float u_amplitude;
 uniform float u_radius;
 uniform float u_radius_smooth;
 
@@ -93,7 +103,7 @@ float simplex(vec2 v) {
   vec3 gx = x - ox;
   // Normalise gradients implicitly by scaling m
   m *= taylorInvSqrt(gx * gx + gy * gy);
-  // Compute f i n a l noise value at P
+  // Compute final noise value at P
   vec3 g;
   g.x = gx.x * x0.x + gy.x * x0.y;
   g.yz = gx.yz * x12.xz + gy.yz * x12.yw;
@@ -106,13 +116,14 @@ void main() {
     vec2 uv = (p + (u_position / u_resolution.xy)) * u_scale * vec2(u_resolution.x / u_resolution.y, 1.0);
     uv = uv * 10.;
 
-
     mat2 m = mat2(1.6, 1.2, -1.2, 1.6);
 
     float f = 0.0;
+    float amplitude = u_amplitude;
     for (int i = 1; i <= u_octaves; i++) {
-        f += (1.0 / pow(2.0, float(i))) * simplex(uv);
+        f += amplitude * simplex(uv);
         uv = m * uv;
+        amplitude /= 2.0;
     }
 
     f = 0.5 + 0.5 * f;

@@ -20,6 +20,15 @@ export const typing = {
     min: 1,
     max: 7,
   },
+  amplitude: <UniformDefinition>{
+    name: 'Amplitude',
+    type: UniformType.Float,
+    default: 50,
+    min: -100,
+    max: 100,
+    step: 1,
+    divider: 100,
+  },
 };
 
 export const shader = `
@@ -36,6 +45,7 @@ uniform float u_time;
 uniform vec2 u_position;
 uniform float u_scale;
 uniform int u_octaves;
+uniform float u_amplitude;
 
 out vec4 fragColor;
 
@@ -92,9 +102,11 @@ void main() {
     mat2 m = mat2(1.6, 1.2, -1.2, 1.6);
 
     float f = 0.0;
+    float amplitude = u_amplitude;
     for (int i = 1; i <= u_octaves; i++) {
-        f += (1.0 / pow(2.0, float(i))) * simplex(uv);
+        f += amplitude * simplex(uv);
         uv = m * uv;
+        amplitude /= 2.0;
     }
 
     f = 0.5 + 0.5 * f;
