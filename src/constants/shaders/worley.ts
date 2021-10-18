@@ -22,8 +22,6 @@ export const typing = {
 };
 
 export const shader = `
-#version 300 es
-
 #ifdef GL_ES
 precision mediump float;
 #endif
@@ -34,8 +32,6 @@ uniform vec2 u_resolution;
 uniform float u_position;
 uniform float u_scale;
 uniform int u_mode;
-
-out vec4 fragColor;
 
 #define OCTAVES   		1		// 7
 
@@ -107,7 +103,7 @@ float fbm(vec2 p, float time, float mode){
 void main() {
   vec2 st = (gl_FragCoord.xy + u_position) / u_resolution;
   float n = worley(st * u_scale, u_time, float(u_mode));
-  fragColor = vec4(vec3(n), 1.0);
+  gl_FragColor = vec4(vec3(n), 1.0);
 }
 `.trimStart();
 

@@ -32,8 +32,6 @@ export const typing = {
 };
 
 export const shader = `
-#version 300 es
-
 #ifdef GL_ES
 precision mediump float;
 #endif
@@ -47,7 +45,7 @@ uniform float u_scale;
 uniform int u_octaves;
 uniform float u_amplitude;
 
-out vec4 fragColor;
+#define MAX_OCTAVES 7
 
 vec3 permute(vec3 x) {
   return mod(((x * 34.0) + 1.0) * x, 289.0);
@@ -103,7 +101,8 @@ void main() {
 
     float f = 0.0;
     float amplitude = u_amplitude;
-    for (int i = 1; i <= u_octaves; i++) {
+    for (int i = 1; i <= MAX_OCTAVES; i++) {
+        if (i > u_octaves) break;
         f += amplitude * simplex(uv);
         uv = m * uv;
         amplitude /= 2.0;
@@ -111,7 +110,7 @@ void main() {
 
     f = 0.5 + 0.5 * f;
 
-    fragColor = vec4(f, f, f, 1.0);
+    gl_FragColor = vec4(f, f, f, 1.0);
 }
 `.trimStart();
 

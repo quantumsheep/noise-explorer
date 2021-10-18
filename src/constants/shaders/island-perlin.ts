@@ -47,8 +47,6 @@ export const typing = {
 };
 
 export const shader = `
-#version 300 es
-
 #ifdef GL_ES
 precision mediump float;
 #endif
@@ -64,7 +62,7 @@ uniform float u_amplitude;
 uniform float u_radius;
 uniform float u_radius_smooth;
 
-out vec4 fragColor;
+#define MAX_OCTAVES 7
 
 vec4 permute(vec4 x) {
     return mod(((x * 34.0) + 1.0) * x, 289.0);
@@ -127,7 +125,8 @@ void main() {
 
     float f = 0.0;
     float amplitude = u_amplitude;
-    for (int i = 1; i <= u_octaves; i++) {
+    for (int i = 1; i <= MAX_OCTAVES; i++) {
+        if (i > u_octaves) break;
         f += amplitude * perlin(uv);
         uv = m * uv;
         amplitude /= 2.0;
@@ -141,24 +140,24 @@ void main() {
     f *= circle;
 
     if(f > 0.7) {
-        fragColor = vec4(1.0, 1.0, 1.0, 1.0);
+        gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
     } else if(f > 0.67) {
-        fragColor = vec4(0.71, 0.81, 0.72, 1);
+        gl_FragColor = vec4(0.71, 0.81, 0.72, 1);
     } else if(f > 0.6) {
-        fragColor = vec4(0.515, 0.715, 0.531, 1.000);
+        gl_FragColor = vec4(0.515, 0.715, 0.531, 1.000);
     } else if(f > 0.5) {
-        fragColor = vec4(0.283, 0.860, 0.252, 1.000);
+        gl_FragColor = vec4(0.283, 0.860, 0.252, 1.000);
     } else if(f > 0.46) {
-        fragColor = vec4(0.94, 1, 0.71, 1);
+        gl_FragColor = vec4(0.94, 1, 0.71, 1);
     } else if(f > 0.4) {
-        fragColor = vec4(0.236, 0.325, 1.000, 1.000);
+        gl_FragColor = vec4(0.236, 0.325, 1.000, 1.000);
     } else if(f > 0.35) {
-        fragColor = vec4(0, 0.12, 1, 1);
+        gl_FragColor = vec4(0, 0.12, 1, 1);
     } else {
-        fragColor = vec4(0, 0, 0.81, 1);
+        gl_FragColor = vec4(0, 0, 0.81, 1);
     }
 
-    // fragColor = vec4(f, f, f, 1.0);
+    // gl_FragColor = vec4(f, f, f, 1.0);
 }
 `.trimStart();
 
