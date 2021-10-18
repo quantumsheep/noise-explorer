@@ -29,7 +29,7 @@ precision mediump float;
 uniform float u_time;
 uniform vec2 u_resolution;
 
-uniform float u_position;
+uniform vec2 u_position;
 uniform float u_scale;
 uniform int u_mode;
 
