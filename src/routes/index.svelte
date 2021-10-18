@@ -261,6 +261,7 @@ void main() {
 
 	canvas {
 		width: 512px;
+		height: 100%;
 		max-width: 100%;
 	}
 </style>
